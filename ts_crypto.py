@@ -4,6 +4,11 @@ import time
 
 from db import *
 
+# Load enviroment variables from the .env file
+load_dotenv()
+LOGGER_FILE = os.getenv('LOGGER_FILE')
+DB_NAME = os.getenv('DB_NAME')
+
 urls = [
     'https://criptoya.com/api/tiendacrypto/usdt/ars',
     'https://criptoya.com/api/buenbit/usdt/ars',
@@ -34,7 +39,7 @@ cols = {
 MINUTES_DELAY = 5
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='app.log',
+    logging.basicConfig(filename=LOGGER_FILE,
                         level=logging.DEBUG,
                         filemode='a',
                         format='%(name)s - %(levelname)s - %(message)s')

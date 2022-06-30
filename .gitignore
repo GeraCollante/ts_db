@@ -7,10 +7,11 @@ __pycache__/
 *.so
 
 # Values
-max_val
+*.pkl
 
 # Databases
 *.db
+
 
 # Distribution / packaging
 .Python

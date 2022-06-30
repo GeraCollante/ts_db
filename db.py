@@ -2,12 +2,18 @@ import sqlite3
 from datetime import datetime as dt
 from statistics import fmean
 
+from dotenv import load_dotenv
+
 import pandas as pd
 import requests
+import os
 
 from db import *
 
-DB_NAME = 'ts_crypto.db'
+# Load enviroment variables from the .env file
+load_dotenv()
+LOGGER_FILE = os.getenv('LOGGER_FILE')
+DB_NAME = os.getenv('DB_NAME')
 
 def conn_db(db_name, ro=False):
     """

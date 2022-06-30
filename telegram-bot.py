@@ -12,10 +12,13 @@ from db import *
 MINUTES_BROADCAST = 30
 trophies = {0: '🥇', 1: '🥈', 2: '🥉'}
 
-# Load the token from the .env file
+# Load enviroment variables from the .env file
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 GROUP_ID = os.getenv('GROUP_ID')
+LOGGER_FILE = os.getenv('LOGGER_FILE')
+DB_NAME = os.getenv('DB_NAME')
+MAX_VAL_PATH = os.getenv('MAX_VAL')
 
 # Load database
 conn = conn_db(DB_NAME, ro=True)
@@ -74,7 +77,6 @@ def get_max_value(df):
 # def start(update, context):
 #     update.message.reply_text(get_prices(df))
 
-
 # # Create a function to send messages automaticaly every minute
 # def send_message(update, context):
 #     update.message.reply_text(get_prices(df))
@@ -90,7 +92,7 @@ def broadcast_msg(msg):
 class Broadcaster:
     def __init__(self, logger):
         self.max_value = {'totalBid': 0}
-        self.max_path = 'max_val'
+        self.max_path = MAX_VAL_PATH
         self.logger = logger
 
     def set_max_value(self):
@@ -98,7 +100,7 @@ class Broadcaster:
         Set the max value from the file
         """
         if os.path.exists(self.max_path):
-            with open('max_val', 'r') as f:
+            with open(self.max_path, 'r') as f:
                 self.max_value = json.load(f)
 
     def check_max_value(self, max_value):
@@ -127,10 +129,11 @@ class Broadcaster:
             self.logger.info('Check max value')
             max_value = get_max_value(df)
             if self.check_max_value(max_value):
-                broadcast_msg('🚨🤑💲 Nuevo valor máximo histórico en {}: {:.2f}ARS'.format(
-                    max_value['exchange'].title(), max_value['totalBid']))
+                broadcast_msg(
+                    '🚨🤑💲 Nuevo valor máximo histórico en {}: {:.2f}ARS'.format(
+                        max_value['exchange'].title(), max_value['totalBid']))
 
-            self.logger.info('Broadcasting') 
+            self.logger.info('Broadcasting')
             broadcast_msg(get_prices(df))
 
             self.logger.info('Sleeping')
@@ -146,7 +149,7 @@ if __name__ == '__main__':
     # dp.add_handler(MessageHandler(Filters.text, send_message))
     # dp = updater.dispatcher
 
-    logging.basicConfig(filename='app.log',
+    logging.basicConfig(filename=LOGGER_FILE,
                         level=logging.DEBUG,
                         filemode='a',
                         format='%(name)s - %(levelname)s - %(message)s')
