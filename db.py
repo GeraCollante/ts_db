@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime as dt
-from statistics import fmean
-
+# from statistics import fmean
+from numpy import mean
 from dotenv import load_dotenv
 
 import pandas as pd
@@ -126,10 +126,10 @@ def query_binance(c):
     """
     sell = 'https://criptoya.com/api/binancep2p/sell/usdt/ars/5'
     buy = 'https://criptoya.com/api/binancep2p/buy/usdt/ars/5'
-    bid = fmean([
+    bid = mean([
         float(adv['adv']['price']) for adv in requests.get(sell).json()['data']
     ])
-    ask = fmean([
+    ask = mean([
         float(adv['adv']['price']) for adv in requests.get(buy).json()['data']
     ])
 

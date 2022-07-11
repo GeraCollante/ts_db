@@ -1,15 +1,14 @@
 import datetime
-import json
+import pickle as pkl
 import logging
 import os
 import time
 
 from dotenv import load_dotenv
-from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
+# from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
 
 from db import *
 
-MINUTES_BROADCAST = 30
 trophies = {0: '🥇', 1: '🥈', 2: '🥉'}
 
 # Load enviroment variables from the .env file
@@ -19,6 +18,7 @@ GROUP_ID = os.getenv('GROUP_ID')
 LOGGER_FILE = os.getenv('LOGGER_FILE')
 DB_NAME = os.getenv('DB_NAME')
 MAX_VAL_PATH = os.getenv('MAX_VAL')
+MINUTES_BROADCAST = int(os.getenv('MINUTES_BROADCAST'))
 
 # Load database
 conn = conn_db(DB_NAME, ro=True)
@@ -86,7 +86,7 @@ def broadcast_msg(msg):
     to_url = 'https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&parse_mode=HTML'.format(
         TOKEN, GROUP_ID, msg)
     resp = requests.get(to_url)
-    print(resp.text)
+    # print(resp.text)
 
 
 class Broadcaster:
@@ -100,8 +100,8 @@ class Broadcaster:
         Set the max value from the file
         """
         if os.path.exists(self.max_path):
-            with open(self.max_path, 'r') as f:
-                self.max_value = json.load(f)
+            with open(self.max_path, 'rb') as f:
+                self.max_value = pkl.load(f)
 
     def check_max_value(self, max_value):
         """
@@ -114,9 +114,9 @@ class Broadcaster:
         """
         if max_value.get('totalBid') > self.max_value.get('totalBid'):
             self.max_value = max_value
-            with open(self.max_path, 'w') as f:
+            with open(self.max_path, 'wb') as f:
                 del max_value['date']
-                json.dump(self.max_value, f)
+                pkl.dump(self.max_value, f)
             return True
         else:
             return False
@@ -128,6 +128,7 @@ class Broadcaster:
 
             self.logger.info('Check max value')
             max_value = get_max_value(df)
+            
             if self.check_max_value(max_value):
                 broadcast_msg(
                     '🚨🤑💲 Nuevo valor máximo histórico en {}: {:.2f}ARS'.format(
@@ -152,7 +153,7 @@ if __name__ == '__main__':
     logging.basicConfig(filename=LOGGER_FILE,
                         level=logging.DEBUG,
                         filemode='a',
-                        format='%(name)s - %(levelname)s - %(message)s')
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     logger = logging.getLogger('ts_crypto')
 

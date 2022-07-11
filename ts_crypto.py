@@ -42,7 +42,7 @@ if __name__ == '__main__':
     logging.basicConfig(filename=LOGGER_FILE,
                         level=logging.DEBUG,
                         filemode='a',
-                        format='%(name)s - %(levelname)s - %(message)s')
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
     logger = logging.getLogger('ts_crypto')
 
@@ -68,18 +68,17 @@ if __name__ == '__main__':
 
     # Query the exchanges
     logger.info('Querying exchanges')
-    while True:
-        for url in urls:
-            query_exchange(c, url)
-        query_binance(c)
+    for url in urls:
+        query_exchange(c, url)
+    query_binance(c)
 
-        # Update the database
-        conn.commit()
+    # Update the database
+    conn.commit()
 
-        time.sleep(MINUTES_DELAY * 60)
+    # time.sleep(MINUTES_DELAY * 60)
 
-    df = get_dataframe(c)
-    print(df)
+    # df = get_dataframe(c)
+    # print(df)
 
     # Close the connection
     conn.close()
