@@ -75,11 +75,6 @@ if __name__ == '__main__':
     # Update the database
     conn.commit()
 
-    # time.sleep(MINUTES_DELAY * 60)
-
-    # df = get_dataframe(c)
-    # print(df)
-
     # Close the connection
     conn.close()
     logging.info('Connection closed')
