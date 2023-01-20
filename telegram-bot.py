@@ -123,22 +123,25 @@ class Broadcaster:
 
     def start(self):
         while True:
-            self.logger.info('Retrieving data')
-            df = get_dataframe(c)
+            try:
+                self.logger.info('Retrieving data')
+                df = get_dataframe(c)
 
-            self.logger.info('Check max value')
-            max_value = get_max_value(df)
-            
-            if self.check_max_value(max_value):
-                broadcast_msg(
-                    '🚨🤑💲 Nuevo valor máximo histórico en {}: {:.2f}ARS'.format(
-                        max_value['exchange'].title(), max_value['totalBid']))
+                self.logger.info('Check max value')
+                max_value = get_max_value(df)
+                
+                if self.check_max_value(max_value):
+                    broadcast_msg(
+                        '🚨🤑💲 Nuevo valor máximo histórico en {}: {:.2f}ARS'.format(
+                            max_value['exchange'].title(), max_value['totalBid']))
 
-            self.logger.info('Broadcasting')
-            broadcast_msg(get_prices(df))
+                self.logger.info('Broadcasting')
+                broadcast_msg(get_prices(df))
 
-            self.logger.info('Sleeping')
-            time.sleep(MINUTES_BROADCAST * 60)
+                self.logger.info('Sleeping')
+                time.sleep(MINUTES_BROADCAST * 60)
+            except Exception as e:
+                self.logger.error(e)
 
 
 if __name__ == '__main__':

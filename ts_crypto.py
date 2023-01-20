@@ -16,7 +16,7 @@ urls = [
     'https://criptoya.com/api/satoshitango/usdt/ars',
     'https://criptoya.com/api/letsbit/usdt/ars/0.1',
     'https://criptoya.com/api/bitso/usdt/ars/500',
-    'https://criptoya.com/api/ftx/usdt/ars/0.1',
+    # 'https://criptoya.com/api/ftx/usdt/ars/0.1',
     'https://criptoya.com/api/lemoncash/usdt',
     'https://criptoya.com/api/bitmonedero/usdt/ars/0.02',
     'https://criptoya.com/api/kriptonmarket/usdt/ars/100',
